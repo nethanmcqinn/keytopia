@@ -1,16 +1,33 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginRegisterController;
 
-Route::controller(LoginRegisterController::class)->group(function() {
-    Route::get('/register', 'register')->name('register');
-    Route::post('/store', 'store')->name('store');
-    Route::get('/login', 'login')->name('login');
-    Route::post('/authenticate', 'authenticate')->name('authenticate');
-    Route::get('/home', 'home')->name('home');
-    Route::post('/logout', 'logout')->name('logout');
+// Public routes
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
+
+// Authentication routes
+Route::middleware('auth')->group(function () {
+    // Dashboard route
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Products route
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+    // Admin routes
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    });
 });
-Route::get('/', function () {
-    return view('welcome');
-});
+
+require __DIR__.'/auth.php';
