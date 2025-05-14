@@ -9,12 +9,7 @@ class AdminUserSeeder extends Seeder
 {
     public function run()
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@keytopia.com',
-            'password' => bcrypt('admin123'), // Change this password!
-            'is_admin' => true
-        ]);
+        
     }
 }User::create([
     'name' => env('ADMIN_NAME', 'Admin'),
